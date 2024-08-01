@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import messagebox
 from PIL import Image, ImageTk
 import random
 
@@ -33,7 +32,18 @@ def on_user_choice(user_choice):
     else:
         ties += 1
     update_score()
-    result_label.config(text=f"Computer chose: {computer_choice}\n{result}")
+    
+    result_text.config(state=tk.NORMAL)  # Allow editing
+    result_text.delete(1.0, tk.END)  # Clear previous text
+    if result == "You win!":
+        result_text.insert(tk.END, "Computer chose: ", ("center", "green"))
+    elif result == "You lose!":
+        result_text.insert(tk.END, "Computer chose: ", ("center", "red"))
+    else:
+        result_text.insert(tk.END, "Computer chose: ", ("center", "blue"))
+    result_text.insert(tk.END, computer_choice + "\n", "center")
+    result_text.insert(tk.END, result, "center")
+    result_text.config(state=tk.DISABLED)  # Make read-only
 
 # Function to highlight computer's choice
 def highlight_computer_choice(computer_choice):
@@ -73,7 +83,7 @@ root.eval('tk::PlaceWindow . center')
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 window_width = int(screen_width * 0.345)
-window_height = int(screen_height * 0.66)
+window_height = int(screen_height * 0.75)
 
 # Calculate position to center the window
 position_right = int(screen_width/2 - window_width/2)
@@ -110,9 +120,9 @@ computer_rock_button.grid(row=2, column=0, padx=10, pady=10)
 computer_paper_button.grid(row=2, column=1, padx=10, pady=10)
 computer_scissors_button.grid(row=2, column=2, padx=10, pady=10)
 
-# Add "VS" label
-vs_label = tk.Label(root, text="VS", font=("Arial", 24), bg="white")
-vs_label.grid(row=3, column=1, pady=10)
+# Add result Text widget below computer's choice buttons
+result_text = tk.Text(root, width=50, height=3, font=("Arial", 16), bg="white", state=tk.DISABLED)
+result_text.grid(row=3, column=0, columnspan=3, pady=10)
 
 # Add "Your Choice" label
 user_choice_label = tk.Label(root, text="Your Choice:", font=("Arial", 16), bg="white")
@@ -128,9 +138,17 @@ user_rock_button.grid(row=5, column=0, padx=10, pady=10)
 user_paper_button.grid(row=5, column=1, padx=10, pady=10)
 user_scissors_button.grid(row=5, column=2, padx=10, pady=10)
 
-# Add result label under user's choice buttons
-result_label = tk.Label(root, text="", font=("Arial", 16), bg="white")
-result_label.grid(row=6, column=0, columnspan=3, pady=10)
+# Configure column widths to adjust the layout
+root.columnconfigure(0, weight=1)
+root.columnconfigure(1, weight=1)
+root.columnconfigure(2, weight=1)
+
+# Configure text tags for center alignment and colors
+result_text.tag_configure("center", justify='center')
+result_text.tag_configure("green", foreground="green")
+result_text.tag_configure("red", foreground="red")
+result_text.tag_configure("blue", foreground="blue")
+result_text.tag_configure("black", foreground="black")
 
 # Start the GUI event loop
 root.mainloop()
